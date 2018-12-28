@@ -36,6 +36,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.add_dependency 'rails', '~> 5.0', '< 5.3'
   spec.add_development_dependency "bundler", "~> 1.17"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
@@ -43,5 +44,38 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "actionpack", "~> 5.0"
   spec.add_development_dependency "actionview", "~> 5.0"
   spec.add_development_dependency "rubytree", "~> 1.0"
+
+  spec.add_development_dependency('rake',  '~> 10.1')
+  spec.add_development_dependency('byebug')
+  spec.add_development_dependency('appraisal')
+
+  spec.add_development_dependency('rspec', '~> 3.6.0')
+  spec.add_development_dependency('rspec-rails', '~> 3.6.0')
+  spec.add_development_dependency('shoulda-matchers', '2.8.0')
+  spec.add_development_dependency('capybara', '~> 2.2.0')
+  spec.add_development_dependency('faker', '~> 1.8.7')
+  spec.add_development_dependency('poltergeist', '~> 1.9.0')
+  spec.add_development_dependency('capybara-screenshot', '~> 1.0.11')
+  spec.add_development_dependency('selenium-webdriver', '~> 2.51.0')
+
+  # Required by the test app.
+  spec.add_development_dependency('haml', '~> 5.0.4')
+  spec.add_development_dependency('coderay', '~> 1.1.0')
+  spec.add_development_dependency('jquery-rails', '~> 4.3.3')
+  spec.add_development_dependency('jquery-ui-rails', '~> 5.0.5')
+  spec.add_development_dependency('jquery-ui-themes', '~> 0.0.11')
+  spec.add_development_dependency('sass-rails', '>= 3.2')
+  spec.add_development_dependency('bootstrap-sass', '3.1.1.1')
+  spec.add_development_dependency('font-awesome-sass', '4.4.0')
+  spec.add_development_dependency('turbolinks', '~> 5.1.1')
+  spec.add_development_dependency('therubyracer')
+
+  spec.add_development_dependency('bundler',   '~> 1.3')
+  spec.add_development_dependency('simplecov', '~> 0.7')
+  spec.add_development_dependency('sqlite3',   '~> 1.3')
+
+  spec.add_development_dependency('yard', '~> 0.8')
+  spec.add_development_dependency('inch', '~> 0.6.4')
+  spec.add_development_dependency('rdoc', '~> 4.2.0')
 
 end
