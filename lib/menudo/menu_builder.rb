@@ -73,7 +73,7 @@ module Menudo
     def authorize_items(object, options = {})
       can = options[:can].presence || :read
       options[:controller] ||= auto_set_controller(object)
-      can?(object, can.to_sym)
+      can?(can.to_sym, object)
     end
 
     def auto_set_controller(object)
