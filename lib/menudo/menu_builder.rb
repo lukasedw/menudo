@@ -1,7 +1,7 @@
 module Menudo
   class MenuBuilder
 
-    delegate :tag, :content_tag, :link_to, :capture, :pluralize, :t, :controller_name, :can?, to: :@context
+    delegate :tag, :content_tag, :link_to, :capture, :pluralize, :t, :controller_name, :params, :can?, to: :@context
 
     def initialize(context, object, options)
       @context = context
@@ -54,7 +54,14 @@ module Menudo
         path = "##{key}"
         a_options[:'data-toggle'] = 'collapse'
       else
-        li_options = { class: 'active' } if controller_name == options[:controller]
+        active_parameter = options[:active_parameter]
+        active_value = options[:active_value]
+
+        if active_parameter.present? && active_value.present?
+          li_options = { class: 'active' } if controller_name == options[:controller] && params[active_parameter] == active_value.to_s
+        else
+          li_options = { class: 'active' } if controller_name == options[:controller]
+        end
       end
       content_tag :li, li_options do
         concat(link_to(path || '#', a_options) do
@@ -67,6 +74,7 @@ module Menudo
 
     def item(object, options = {})
       return unless authorize_items(object, options)
+
       @childs << { object: object, options: options }
     end
 
