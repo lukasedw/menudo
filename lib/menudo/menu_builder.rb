@@ -1,7 +1,7 @@
 module Menudo
   class MenuBuilder
 
-    delegate :tag, :content_tag, :link_to, :capture, :pluralize, :t, :controller_name, :params, :can?, to: :@context
+    delegate :tag, :content_tag, :link_to, :capture, :pluralize, :t, :controller_name, :params, :can?, :deep_merge!, to: :@context
 
     def initialize(context, object, options)
       @context = context
@@ -23,7 +23,7 @@ module Menudo
     def build
       if @childs.present?
         build_item do |k|
-          content_tag(:ul, class: "sidebar-nav sidebar-subnav collapse#{ k[:active] ? ' active' : '' }", id: k[:key]) do
+          content_tag(:ul, class: "sidenav-menu #{ k[:active] ? ' active' : '' }", id: k[:key]) do
             @childs.each do |i|
               concat(build_item(i[:object], i[:options]) || '')
             end
@@ -45,28 +45,28 @@ module Menudo
       icon = options[:icon]
       key = ActiveSupport::Inflector.parameterize(object.to_s, separator: '_')
       label = options[:label] || t("controllers.#{key.pluralize}.other")
-      li_options = {}
-      a_options = {}
+      li_options = { class: 'sidenav-item' }
+      a_options = { class: 'sidenav-link' }
       if block_given?
         controllers = @childs.map{ |i| i[:options][:controller] } # verify nil, and this is important, dont be passed as an option
         item_active = controllers.present? && controllers.include?(controller_name)
-        li_options = { class: 'active' } if item_active
+        a_options = { class: "#{a_options[:class]} sidenav-toggle" }
+        li_options = li_options.deep_merge!({ class: "#{li_options[:class]} active open" }) if item_active
         path = "##{key}"
-        a_options[:'data-toggle'] = 'collapse'
       else
         active_parameter = options[:active_parameter]
         active_value = options[:active_value]
 
         if active_parameter.present? && active_value.present?
-          li_options = { class: 'active' } if controller_name == options[:controller] && params[active_parameter] == active_value.to_s
+          li_options = li_options.deep_merge!({ class: "active #{li_options[:class]}" }) if controller_name == options[:controller] && params[active_parameter] == active_value.to_s
         else
-          li_options = { class: 'active' } if controller_name == options[:controller]
+          li_options = li_options.deep_merge!({ class: "active #{li_options[:class]}" }) if controller_name == options[:controller]
         end
       end
       content_tag :li, li_options do
         concat(link_to(path || '#', a_options) do
-          concat(content_tag(:em, '', class: icon)) if icon.present?
-          concat(content_tag(:span, label))
+          concat(content_tag(:i, '', class: "sidenav-icon #{icon}")) if icon.present?
+          concat(content_tag(:div, label))
         end)
         concat(capture({ key: key, active: item_active }, &block)) if block_given?
       end
