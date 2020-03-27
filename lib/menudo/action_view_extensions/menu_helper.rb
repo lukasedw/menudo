@@ -4,8 +4,16 @@ module Menudo
       def menudo_for(object, options = {}, &block)
         b = Menudo::MenuBuilder.new(self, object, options)
         if block_given?
-          block.yield(b)
-          b.build
+          begin
+            a = capture(&block)
+          rescue
+            block.yield(b)
+            b.build
+          else
+            b.build do
+              a
+            end
+          end
         else
           b.build_item
         end

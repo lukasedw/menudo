@@ -20,7 +20,13 @@ module Menudo
     #   # @node = Tree::TreeNode.new('root')
     # end
 
-    def build
+    def build(&block)
+      if @options[:type] == 'capture'
+        return content_tag(:li, @options[:li_html]) do
+          capture(&block) if block_given?
+        end
+      end
+
       if @childs.present?
         build_item do |k|
           content_tag(:ul, class: "sidebar-nav sidebar-subnav collapse#{ k[:active] ? ' active' : '' }", id: k[:key]) do
@@ -45,12 +51,13 @@ module Menudo
       icon = options[:icon]
       key = ActiveSupport::Inflector.parameterize(object.to_s, separator: '_')
       label = options[:label] || t("controllers.#{key.pluralize}.other")
-      li_options = {}
+      li_options = options[:li_html] || {}
       a_options = {}
+
       if block_given?
         controllers = @childs.map{ |i| i[:options][:controller] } # verify nil, and this is important, dont be passed as an option
         item_active = controllers.present? && controllers.include?(controller_name)
-        li_options = { class: 'active' } if item_active
+        li_options = li_options.merge(class: 'active') if item_active
         path = "##{key}"
         a_options[:'data-toggle'] = 'collapse'
       else
@@ -58,9 +65,9 @@ module Menudo
         active_value = options[:active_value]
 
         if active_parameter.present? && active_value.present?
-          li_options = { class: 'active' } if controller_name == options[:controller] && params[active_parameter] == active_value.to_s
+          li_options = li_options.merge(class: 'active') if controller_name == options[:controller] && params[active_parameter] == active_value.to_s
         else
-          li_options = { class: 'active' } if controller_name == options[:controller]
+          li_options = li_options.merge(class: 'active') if controller_name == options[:controller]
         end
       end
       content_tag :li, li_options do
