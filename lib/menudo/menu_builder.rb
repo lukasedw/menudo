@@ -1,7 +1,7 @@
 module Menudo
   class MenuBuilder
 
-    delegate :tag, :content_tag, :link_to, :capture, :pluralize, :t, :controller_name, :params, to: :@context
+    delegate :tag, :content_tag, :link_to, :capture, :pluralize, :t, :controller_name, :params, :policy, to: :@context
 
     def initialize(context, object, options)
       @context = context
@@ -89,7 +89,8 @@ module Menudo
       # can = options[:can].presence || :read
       # options[:controller] ||= auto_set_controller(object)
       # can?(can.to_sym, object)
-      true
+      policy(object).index?
+      # true
     end
 
     def auto_set_controller(object)
